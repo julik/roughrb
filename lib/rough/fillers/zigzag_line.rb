@@ -9,8 +9,8 @@ module Rough
       end
 
       def fill_polygons(polygon_list, o)
-        gap = o.hachure_gap < 0 ? (o.stroke_width * 4) : o.hachure_gap
-        zo = o.zigzag_offset < 0 ? gap : o.zigzag_offset
+        gap = (o.hachure_gap < 0) ? (o.stroke_width * 4) : o.hachure_gap
+        zo = (o.zigzag_offset < 0) ? gap : o.zigzag_offset
         o2 = o.merge(hachure_gap: gap + zo)
         lines = ScanLineHachure.polygon_hachure_lines(polygon_list, o2)
         OpSet.new(type: :fillSketch, ops: zigzag_lines(lines, zo, o2))

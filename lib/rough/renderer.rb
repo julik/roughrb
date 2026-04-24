@@ -87,7 +87,7 @@ module Rough
       if !o.disable_multi_stroke && o.roughness != 0
         ap2, _ = _compute_ellipse_points(ellipse_params[:increment], x, y, ellipse_params[:rx], ellipse_params[:ry], 1.5, 0, o)
         o2 = _curve_ops(ap2, nil, o)
-        o1 = o1 + o2
+        o1 += o2
       end
       {
         estimated_points: cp1,
@@ -284,7 +284,7 @@ module Rough
       elsif length > 500
         0.4
       else
-        (-0.0016668) * length + 1.233334
+        -0.0016668 * length + 1.233334
       end
 
       offset = o.max_randomness_offset || 0
@@ -303,21 +303,21 @@ module Rough
       preserve_vertices = o.preserve_vertices
 
       if move
-        if overlay
-          ops << Op.new(op: :move, data: [
+        ops << if overlay
+          Op.new(op: :move, data: [
             x1 + (preserve_vertices ? 0 : random_half.call),
             y1 + (preserve_vertices ? 0 : random_half.call)
           ])
         else
-          ops << Op.new(op: :move, data: [
+          Op.new(op: :move, data: [
             x1 + (preserve_vertices ? 0 : _offset_opt(offset, o, roughness_gain)),
             y1 + (preserve_vertices ? 0 : _offset_opt(offset, o, roughness_gain))
           ])
         end
       end
 
-      if overlay
-        ops << Op.new(op: :bcurveTo, data: [
+      ops << if overlay
+        Op.new(op: :bcurveTo, data: [
           mid_disp_x + x1 + (x2 - x1) * diverge_point + random_half.call,
           mid_disp_y + y1 + (y2 - y1) * diverge_point + random_half.call,
           mid_disp_x + x1 + 2 * (x2 - x1) * diverge_point + random_half.call,
@@ -326,7 +326,7 @@ module Rough
           y2 + (preserve_vertices ? 0 : random_half.call)
         ])
       else
-        ops << Op.new(op: :bcurveTo, data: [
+        Op.new(op: :bcurveTo, data: [
           mid_disp_x + x1 + (x2 - x1) * diverge_point + random_full.call,
           mid_disp_y + y1 + (y2 - y1) * diverge_point + random_full.call,
           mid_disp_x + x1 + 2 * (x2 - x1) * diverge_point + random_full.call,
@@ -394,7 +394,7 @@ module Rough
       all_points = []
 
       if core_only
-        increment = increment / 4.0
+        increment /= 4.0
         all_points << [cx + rx * Math.cos(-increment), cy + ry * Math.sin(-increment)]
         angle = 0.0
         while angle <= Math::PI * 2
@@ -465,10 +465,10 @@ module Rough
       iterations = o.disable_multi_stroke ? 1 : 2
       preserve_vertices = o.preserve_vertices
       iterations.times do |i|
-        if i == 0
-          ops << Op.new(op: :move, data: [current[0], current[1]])
+        ops << if i == 0
+          Op.new(op: :move, data: [current[0], current[1]])
         else
-          ops << Op.new(op: :move, data: [
+          Op.new(op: :move, data: [
             current[0] + (preserve_vertices ? 0 : _offset_opt(ros[0], o)),
             current[1] + (preserve_vertices ? 0 : _offset_opt(ros[0], o))
           ])
@@ -484,7 +484,7 @@ module Rough
     end
 
     private_class_method :clone_options_alter_seed, :_double_line, :_line_ops,
-                         :_curve_with_offset, :_curve_ops, :_compute_ellipse_points,
-                         :_arc, :_bezier_to
+      :_curve_with_offset, :_curve_ops, :_compute_ellipse_points,
+      :_arc, :_bezier_to
   end
 end

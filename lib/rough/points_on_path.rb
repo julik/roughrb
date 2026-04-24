@@ -40,7 +40,7 @@ module Rough
           current_points << [seg.data[0], seg.data[1]]
         when "C"
           if pending_curve.empty?
-            last_point = current_points.length > 0 ? current_points[-1] : start
+            last_point = (current_points.length > 0) ? current_points[-1] : start
             pending_curve << [last_point[0], last_point[1]]
           end
           pending_curve << [seg.data[0], seg.data[1]]
@@ -58,7 +58,7 @@ module Rough
 
       sets.map do |set|
         simplified = PointsOnCurve.simplify(set, distance)
-        simplified.length > 0 ? simplified : nil
+        (simplified.length > 0) ? simplified : nil
       end.compact
     end
   end

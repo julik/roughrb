@@ -70,7 +70,7 @@ module Rough
       l2 = distance_sq(v, w)
       return distance_sq(p, v) if l2 == 0
       t = ((p[0] - v[0]) * (w[0] - v[0]) + (p[1] - v[1]) * (w[1] - v[1])) / l2.to_f
-      t = [[0, t].max, 1].min
+      t = t.clamp(0, 1)
       distance_sq(p, lerp(v, w, t))
     end
 
@@ -84,10 +84,14 @@ module Rough
       p3 = points[offset + 2]
       p4 = points[offset + 3]
 
-      ux = 3 * p2[0] - 2 * p1[0] - p4[0]; ux *= ux
-      uy = 3 * p2[1] - 2 * p1[1] - p4[1]; uy *= uy
-      vx = 3 * p3[0] - 2 * p4[0] - p1[0]; vx *= vx
-      vy = 3 * p3[1] - 2 * p4[1] - p1[1]; vy *= vy
+      ux = 3 * p2[0] - 2 * p1[0] - p4[0]
+      ux *= ux
+      uy = 3 * p2[1] - 2 * p1[1] - p4[1]
+      uy *= uy
+      vx = 3 * p3[0] - 2 * p4[0] - p1[0]
+      vx *= vx
+      vy = 3 * p3[1] - 2 * p4[1] - p1[1]
+      vy *= vy
 
       ux = vx if ux < vx
       uy = vy if uy < vy
@@ -99,7 +103,7 @@ module Rough
       if flatness(points, offset) < tolerance
         p0 = points[offset + 0]
         if out_points.length > 0
-          d = distance(out_points[out_points.length - 1], p0)
+          d = distance(out_points[-1], p0)
           out_points.push(p0) if d > 1
         else
           out_points.push(p0)
@@ -154,7 +158,7 @@ module Rough
     end
 
     private_class_method :distance, :distance_sq, :distance_to_segment_sq,
-                         :lerp, :flatness, :get_points_on_bezier_curve_with_splitting,
-                         :simplify_points
+      :lerp, :flatness, :get_points_on_bezier_curve_with_splitting,
+      :simplify_points
   end
 end

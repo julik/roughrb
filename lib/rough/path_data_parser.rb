@@ -288,7 +288,7 @@ module Rough
 
     def self.tokenize(d)
       tokens = []
-      while !d.empty?
+      until d.empty?
         if (m = d.match(WHITESPACE_RE))
           d = d[m[0].length..]
         elsif (m = d.match(COMMAND_RE))
@@ -371,10 +371,10 @@ module Rough
         x2old = x2
         y2old = y2
 
-        if sweep_flag != 0 && f2 > f1
-          f2 = f1 + (Math::PI * 120 / 180)
+        f2 = if sweep_flag != 0 && f2 > f1
+          f1 + (Math::PI * 120 / 180)
         else
-          f2 = f1 - (Math::PI * 120 / 180)
+          f1 - (Math::PI * 120 / 180)
         end
 
         x2 = cx + r1 * Math.cos(f2)

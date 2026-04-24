@@ -17,7 +17,7 @@ module Rough
           skip_offset = gap if rng_val > 0.7
         end
 
-        HachureFill.hachure_lines(polygon_list, gap, angle, skip_offset == 0 ? 1 : skip_offset)
+        HachureFill.hachure_lines(polygon_list, gap, angle, (skip_offset == 0) ? 1 : skip_offset)
       end
     end
   end

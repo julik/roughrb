@@ -5,7 +5,7 @@ module Rough
     def hachure_lines(polygons, hachure_gap, hachure_angle, hachure_step_offset = 1)
       gap = [hachure_gap, 0.1].max
       # Detect if single polygon passed as [[x,y], ...] vs [[[x,y], ...], ...]
-      polygon_list = if polygons[0] && polygons[0][0] && polygons[0][0].is_a?(Numeric)
+      polygon_list = if polygons[0] && polygons[0][0]&.is_a?(Numeric)
         [polygons]
       else
         polygons
@@ -70,7 +70,7 @@ module Rough
           edges << {
             ymin: ymin,
             ymax: [p1[1], p2[1]].max,
-            x: ymin == p1[1] ? p1[0] : p2[0],
+            x: (ymin == p1[1]) ? p1[0] : p2[0],
             islope: (p2[0] - p1[0]).to_f / (p2[1] - p1[1])
           }
         end

@@ -26,7 +26,7 @@ module Rough
     disable_multi_stroke_fill: false,
     preserve_vertices: false,
     fixed_decimal_place_digits: nil,
-    fill_shape_roughness_gain: 0.8,
+    fill_shape_roughness_gain: 0.8
   }.freeze
 
   # Resolved options with all defaults filled in.
