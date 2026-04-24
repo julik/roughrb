@@ -16,8 +16,16 @@ module Rough
       private
 
       def dashed_line(lines, o)
-        offset = o.dash_offset < 0 ? (o.hachure_gap < 0 ? (o.stroke_width * 4) : o.hachure_gap) : o.dash_offset
-        gap = o.dash_gap < 0 ? (o.hachure_gap < 0 ? (o.stroke_width * 4) : o.hachure_gap) : o.dash_gap
+        offset = if o.dash_offset < 0
+          (o.hachure_gap < 0) ? (o.stroke_width * 4) : o.hachure_gap
+        else
+          o.dash_offset
+        end
+        gap = if o.dash_gap < 0
+          (o.hachure_gap < 0) ? (o.stroke_width * 4) : o.hachure_gap
+        else
+          o.dash_gap
+        end
         ops = []
         lines.each do |line|
           length = Geometry.line_length(line)

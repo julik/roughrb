@@ -28,10 +28,10 @@ module Rough
       outline = Renderer.rectangle(x, y, width, height, o)
       if o.fill
         points = [[x, y], [x + width, y], [x + width, y + height], [x, y + height]]
-        if o.fill_style == "solid"
-          paths << Renderer.solid_fill_polygon([points], o)
+        paths << if o.fill_style == "solid"
+          Renderer.solid_fill_polygon([points], o)
         else
-          paths << Renderer.pattern_fill_polygons([points], o)
+          Renderer.pattern_fill_polygons([points], o)
         end
       end
       paths << outline if o.stroke != "none"
@@ -93,7 +93,7 @@ module Rough
         if o.fill_style == "solid"
           fill_shape = Renderer.curve(points, o.merge(
             disable_multi_stroke: true,
-            roughness: o.roughness != 0 ? (o.roughness + o.fill_shape_roughness_gain) : 0
+            roughness: (o.roughness != 0) ? (o.roughness + o.fill_shape_roughness_gain) : 0
           ))
           paths << OpSet.new(type: :fillPath, ops: _merged_shape(fill_shape.ops))
         else
@@ -133,10 +133,10 @@ module Rough
       paths = []
       outline = Renderer.linear_path(points, true, o)
       if o.fill
-        if o.fill_style == "solid"
-          paths << Renderer.solid_fill_polygon([points], o)
+        paths << if o.fill_style == "solid"
+          Renderer.solid_fill_polygon([points], o)
         else
-          paths << Renderer.pattern_fill_polygons([points], o)
+          Renderer.pattern_fill_polygons([points], o)
         end
       end
       paths << outline if o.stroke != "none"
@@ -148,7 +148,7 @@ module Rough
       paths = []
       return _d("path", paths, o) unless d
 
-      d = (d || "").gsub(/\n/, " ").gsub(/-\s/, "-").gsub(/\s\s/, " ")
+      d = (d || "").tr("\n", " ").gsub(/-\s/, "-").gsub(/\s\s/, " ")
 
       has_fill = o.fill && o.fill != "transparent" && o.fill != "none"
       has_stroke = o.stroke != "none"
@@ -162,7 +162,7 @@ module Rough
           if sets.length == 1
             fill_shape = Renderer.svg_path(d, o.merge(
               disable_multi_stroke: true,
-              roughness: o.roughness != 0 ? (o.roughness + o.fill_shape_roughness_gain) : 0
+              roughness: (o.roughness != 0) ? (o.roughness + o.fill_shape_roughness_gain) : 0
             ))
             paths << OpSet.new(type: :fillPath, ops: _merged_shape(fill_shape.ops))
           else
