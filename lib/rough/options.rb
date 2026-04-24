@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rough
   DEFAULTS = {
     max_randomness_offset: 2,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "options"
 require_relative "op"
 require_relative "random"

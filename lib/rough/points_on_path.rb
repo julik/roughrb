@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "path_data_parser"
 require_relative "points_on_curve"
 

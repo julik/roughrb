@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #!/usr/bin/env ruby
 # Generate SVG files for all README examples.
 # Run: ruby -Ilib test/generate_readme_examples.rb

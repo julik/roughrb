@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rough
   module PathDataParser
     Segment = Struct.new(:key, :data, keyword_init: true)

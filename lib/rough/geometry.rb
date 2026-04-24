@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rough
   # Points are [x, y] arrays. Lines are [[x1,y1], [x2,y2]].
   module Geometry
