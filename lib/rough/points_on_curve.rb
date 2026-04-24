@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rough
   module PointsOnCurve
     module_function

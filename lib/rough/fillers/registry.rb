@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "hachure"
 require_relative "hatch"
 require_relative "zigzag"

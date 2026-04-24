@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rough
   # A single drawing primitive: :move, :bcurveTo, or :lineTo
   Op = Struct.new(:op, :data, keyword_init: true)

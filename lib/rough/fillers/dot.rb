@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "scan_line_hachure"
 require_relative "../geometry"
 

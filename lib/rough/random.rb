@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rough
   # Seeded pseudo-random number generator using Park-Miller LCG.
   # Produces deterministic sequences for a given seed, matching
