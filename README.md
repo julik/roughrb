@@ -208,6 +208,25 @@ end
 | `disable_multi_stroke` | false | Don't draw each line twice (less hand-drawn look but faster) |
 | `preserve_vertices` | false | Don't randomize endpoints |
 
+## Seeds and reproducibility
+
+Every shape method accepts a `seed:` option. Same seed, same input, same output — every time.
+
+```ruby
+svg.rectangle(0, 0, 100, 100, seed: 42)   # always the same sketch
+svg.rectangle(0, 0, 100, 100, seed: 42)   # identical
+svg.rectangle(0, 0, 100, 100, seed: 43)   # subtly different
+svg.rectangle(0, 0, 100, 100)             # different on every call
+```
+
+Without an explicit `seed:`, output uses `Kernel#rand` and changes on every render.
+
+### Parity with rough.js
+
+When you supply the same `seed:` to a roughrb shape and a [rough.js](https://github.com/rough-stuff/rough) shape with otherwise identical options, the resulting `move` / `bcurveTo` / `lineTo` operations are byte-identical. The `Rough::Random` class implements rough.js's Park–Miller LCG (`Math.imul(48271, seed) & 0x7FFFFFFF`) exactly, and every renderer/filler routes through it. The `test/test_parity_regression.rb` suite locks this in with ~16k assertions against fixture data captured from rough.js.
+
+There is one **deliberate** exception: `fill_style: "dots"`. rough.js's dot filler calls `Math.random()` unconditionally, so even with a seed its dot positions vary between renders. roughrb instead routes dot positions through the seeded randomizer, so seeded dot fills are reproducible in roughrb but will not match rough.js's dot output. Unseeded dots fall through to `Kernel#rand` and stay stochastic, matching rough.js's behaviour for unseeded use.
+
 ## Credits
 
 Ruby port based on [rough.js](https://github.com/rough-stuff/rough) by [Preet Shihn](https://github.com/pshihn).

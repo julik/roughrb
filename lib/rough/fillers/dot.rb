@@ -2,6 +2,7 @@
 
 require_relative "scan_line_hachure"
 require_relative "../geometry"
+require_relative "../renderer"
 
 module Rough
   module Fillers
@@ -18,6 +19,10 @@ module Rough
 
       private
 
+      # Deviates intentionally from rough.js (fillers/dot-filler.js), which
+      # calls Math.random() unconditionally and therefore produces a different
+      # dot pattern on every render even when a seed is supplied. Using the
+      # seeded randomizer here gives roughrb users reproducible dot fills.
       def dots_on_lines(lines, o)
         ops = []
         gap = o.hachure_gap
@@ -36,8 +41,8 @@ module Rough
 
           count.times do |i|
             y = min_y + offset + (i * gap)
-            cx = (x - ro) + rand * 2 * ro
-            cy = (y - ro) + rand * 2 * ro
+            cx = (x - ro) + Renderer._random(o) * 2 * ro
+            cy = (y - ro) + Renderer._random(o) * 2 * ro
             el = @helper.ellipse(cx, cy, fweight, fweight, o)
             ops.concat(el.ops)
           end
