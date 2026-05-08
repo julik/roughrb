@@ -9,9 +9,21 @@ require_relative "points_on_path"
 
 module Rough
   class Generator
-    attr_reader :default_options
+    attr_reader :default_options, :random
 
-    def initialize(**config_options)
+    SCENE_SEED_RANGE = 1..0x7FFFFFFF
+
+    # @param random [::Random, nil] a stateful Ruby Random that drives every
+    #   shape's seed. Each shape pulls a fresh integer from it and feeds that
+    #   into rough.js's per-shape LCG.
+    # @param seed [Integer, nil] sugar for `random: ::Random.new(seed)`.
+    # @param config_options remaining shape defaults (stroke, roughness, …).
+    # @raise [ArgumentError] if both random: and seed: are passed.
+    def initialize(random: nil, seed: nil, **config_options)
+      if random && seed
+        raise ArgumentError, "pass either random: (a Random) or seed: (an Integer), not both"
+      end
+      @random = random || (seed && ::Random.new(seed))
       @default_options = ResolvedOptions.new(**config_options)
     end
 
@@ -237,6 +249,9 @@ module Rough
     private
 
     def _o(options)
+      if @random && !options.key?(:seed)
+        options = options.merge(seed: @random.rand(SCENE_SEED_RANGE))
+      end
       options.empty? ? @default_options : @default_options.merge(**options)
     end
 
