@@ -221,6 +221,24 @@ svg.rectangle(0, 0, 100, 100)             # different on every call
 
 Without an explicit `seed:`, output uses `Kernel#rand` and changes on every render.
 
+### Reproducible scenes with `random:`
+
+For a whole scene to be reproducible from a single integer, pass a stateful `Random` (or a `seed:` integer) to the constructor. Each subsequent shape pulls a fresh per-shape seed from it, so consecutive shapes look different from each other but the entire scene replays identically when the same `Random` seed is used:
+
+```ruby
+svg = Rough::SVG.new(random: Random.new(42))
+# or, equivalently:
+svg = Rough::SVG.new(seed: 42)
+
+doc = Rough::SVG.document(400, 200) do |svg|
+  svg.circle(80, 100, 80) +              # picks seed off the rng
+    svg.rectangle(180, 60, 80, 80) +     # picks the next seed
+    svg.line(20, 20, 380, 180)           # and so on
+end
+```
+
+The `random:` keyword matches the convention of `Array#shuffle(random:)` and `Array#sample(random:)`. Pass either `random:` or `seed:` — passing both raises `ArgumentError`. An explicit per-shape `seed:` always wins and does not consume entropy from the scene `Random`, so you can override one shape without disturbing the rest of the scene.
+
 ### Parity with rough.js
 
 When you supply the same `seed:` to a roughrb shape and a [rough.js](https://github.com/rough-stuff/rough) shape with otherwise identical options, the resulting `move` / `bcurveTo` / `lineTo` operations are byte-identical. The `Rough::Random` class implements rough.js's Park–Miller LCG (`Math.imul(48271, seed) & 0x7FFFFFFF`) exactly, and every renderer/filler routes through it. The `test/test_parity_regression.rb` suite locks this in with ~16k assertions against fixture data captured from rough.js.
